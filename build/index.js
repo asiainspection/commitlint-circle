@@ -37,10 +37,11 @@ var matchGithub = function (url, prop) {
     return { owner: owner, repo: repo, data: data };
 };
 var getRangeFromPr = function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-    var _a, owner, repo, pull, github, _b, base, head;
+    var _a, owner, repo, pull, github, _b, base, head, e_1;
     return tslib_1.__generator(this, function (_c) {
         switch (_c.label) {
             case 0:
+                _c.trys.push([0, 3, , 4]);
                 _a = matchGithub(process.env['CIRCLE_PULL_REQUEST'], 'pull'), owner = _a.owner, repo = _a.repo, pull = _a.data;
                 github = new rest_1["default"]();
                 github.authenticate({ type: 'token', token: process.env.GITHUB_TOKEN || '' });
@@ -53,6 +54,11 @@ var getRangeFromPr = function () { return tslib_1.__awaiter(_this, void 0, void 
                 _c.sent();
                 console.log('🔀   Linting PR #%s', pull);
                 return [2 /*return*/, [base.sha, head.sha]];
+            case 3:
+                e_1 = _c.sent();
+                console.log(e_1);
+                throw e_1;
+            case 4: return [2 /*return*/];
         }
     });
 }); };

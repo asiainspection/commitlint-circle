@@ -29,20 +29,26 @@ const matchGithub = <T>(url: string | undefined, prop: string) => {
 }
 
 const getRangeFromPr = async () => {
-    const {owner, repo, data: pull} = matchGithub(process.env['CIRCLE_PULL_REQUEST'], 'pull')
-    const github = new Octokit()
-    github.authenticate({ type: 'token', token: process.env.GITHUB_TOKEN || '' })
+    try {
+        const {owner, repo, data: pull} = matchGithub(process.env['CIRCLE_PULL_REQUEST'], 'pull')
+        const github = new Octokit()
+        github.authenticate({ type: 'token', token: process.env.GITHUB_TOKEN || '' })
 
-    console.log('📡   Looking up PR #%s...', pull)
-    const {data: {base, head}} = await github.pullRequests.get(
-        {owner, repo, number: +pull}
-    )
+        console.log('📡   Looking up PR #%s...', pull)
+        const {data: {base, head}} = await github.pullRequests.get(
+            {owner, repo, number: +pull}
+        )
 
-    await checkCommit(base.sha, head.sha)
-    
-    console.log('🔀   Linting PR #%s', pull)
+        await checkCommit(base.sha, head.sha)
 
-    return [base.sha, head.sha]
+        console.log('🔀   Linting PR #%s', pull)
+
+        return [base.sha, head.sha]
+    } catch (e) {
+        console.log(e)
+        throw e
+    }
+
 }
 
 const getRangeFromCompare = async () => {
